@@ -20,7 +20,6 @@ regex_aanwezig = 'Aanwezig zijn (?P<aanwezig>[0-9]+)'
 # regex_kabinet = ''
 
 
-
 def download_document(url, soup=True):
     """ Downloads document from url, uses soup as default output. """
     document = requests.get(url)
@@ -87,6 +86,7 @@ def parse_datetime(str_datum, str_tijd):
 
 def parse_al_tags(al_item):
     print("Parsing al tags, there are four kinds in the opening type.")
+    # TODO: Remove obsolete function, see what can be reused.
 
     match_voorzitter = re.search(regex_voorzitter, al_item)
     match_aanwezig = re.search(regex_aanwezig, al_item)
@@ -125,32 +125,18 @@ def make_autopct(values):
 def plot_present_over_time(present_mps, date_and_time):
     print("Plot a bar chart of present per day/vergadernummer.")
 
-def plot_present_mps(present_mps, date_and_time, percentage=False):
+def plot_present_mps(present_mps, date_and_time):
     print("Plotting a pie chart with number of present MPs")
     # NOTE: Magic number, even though I don't expect this to change soon.
     total_mps = 150
-    fraction_present = present_mps / total_mps
-    if percentage:
-        print("Plot percentage")
-        fraction_present = round(present_mps / total_mps * 100)
-        fraction_absent = 100 - fraction_present
-    else:
-        print("Plot using absolute numbers")
-        fraction_present = present_mps
-        fraction_absent = total_mps - present_mps
+    absent_mps = total_mps - present_mps
 
-    print(fraction_present)
-    print(fraction_absent)
-
-    # TODO: Plot pie chart with fraction_present and fraction_absent.
-    # Use date in title
-    # Data to plot
-    values = [fraction_present, fraction_absent]
-    labels = ['Aanwezig (%i)' % fraction_present, 
-              'Afwezig (%i)' % fraction_absent]
+    values = [present_mps, absent_mps]
+    labels = ['Aanwezig (%i)' % present_mps, 
+              'Afwezig (%i)' % absent_mps]
     # Plot
     plt.pie(values,
-            # autopct=make_autopct(values),
+            autopct=make_autopct(values),
             startangle=90,
             counterclock=True)
 
