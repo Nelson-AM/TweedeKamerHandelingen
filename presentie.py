@@ -11,12 +11,14 @@ regex_monthyear = '(?P<strMonth>[a-z]+) (?P<year>[0-9]+)'
 regex_date = regex_day + regex_monthyear
 regex_time = 'Aanvang (?P<hour>[0-9]+):(?P<minute>[0-9]+) uur'
 
-# TODO: 
 base_url = 'https://zoek.officielebekendmakingen.nl/h-tk-20172018-'
 document_soort = 'h' # handeling
 instantie = 'tk' # tweede kamer
 vergaderjaar = 20172018 # samenstelling van twee opvolgende jaren
-max_volnummer = 1 # range van 
+max_volnummer = 1 # How to determine this?
+
+# NOTE: Magic number, even though I don't expect this to change soon.
+total_mps = 150
 
 # NOTE: Voorzitter is lid van de TK, dus moet ook op de namenlijst staan.
 # TODO: Namenlijst huidige kamerleden gebruiken in plaats van regex voor
@@ -135,8 +137,6 @@ def plot_present_over_time(present_mps, date_and_time):
 
 def plot_present_mps(present_mps, date_and_time):
     print("Plotting a pie chart with number of present MPs")
-    # NOTE: Magic number, even though I don't expect this to change soon.
-    total_mps = 150
     absent_mps = total_mps - present_mps
 
     values = [present_mps, absent_mps]
@@ -154,10 +154,23 @@ def plot_present_mps(present_mps, date_and_time):
     plt.show()
 
 
-def process_handelingen(base_url):
-    """ """
+def save_presentie_aantal():
+    print('Save CSV containing number of present mps per meeting day')
+    # Output should contain:
+    # - Date-time
+    # - Vergaderjaar + volgnummer
+    # - present_mps
+
+    # TODO: Define output file, i.e.: ./data/aanwezigen_per_vergadering.csv
+    #       As input argument?
+    # TODO: Allow appending of files?
+    # TODO: Separate file for each vergaderjaar? Can be based on URL.
+
+
+def process_opening_presentie(base_url):
+    """ Parse opening and presentie file, save data to CSV """
     
-    # FIXME: Hardcoded range, base this on URL?
+    # FIXME: Hardcoded range for testing purposes.
     for i in range(50, 52):
         print('i: %i' % i)
         download_url = base_url + str(i) + '-1.xml'
@@ -191,12 +204,4 @@ def process_handelingen(base_url):
 
 
 if __name__ == '__main__':
-    process_handelingen()
-
-#   <al-groep> bevat de volgende data in <al> tags.
-#       Voorzitter:\s(?P<Voorzitter>[a-zA-Z]+)
-#       Voorzitter.             <nadruk type="vet">Voorzitter: naam</nadruk>
-#       Aantal aanwezigen.      Aanwezig zijn ### leden der Kamer, te weten:
-#                               
-#       Aanwezigen parlement.   Naam, Naam, ..., Naam en Naam,
-#       Aanwezigen kabinet.     en Naam, positie, ..., en Naam, positie.
+    process_opening_presentie(base_url)
