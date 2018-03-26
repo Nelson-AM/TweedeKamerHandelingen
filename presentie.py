@@ -11,6 +11,13 @@ regex_monthyear = '(?P<strMonth>[a-z]+) (?P<year>[0-9]+)'
 regex_date = regex_day + regex_monthyear
 regex_time = 'Aanvang (?P<hour>[0-9]+):(?P<minute>[0-9]+) uur'
 
+# TODO: 
+base_url = 'https://zoek.officielebekendmakingen.nl/h-tk-20172018-'
+document_soort = 'h' # handeling
+instantie = 'tk' # tweede kamer
+vergaderjaar = 20172018 # samenstelling van twee opvolgende jaren
+max_volnummer = 1 # range van 
+
 # NOTE: Voorzitter is lid van de TK, dus moet ook op de namenlijst staan.
 # TODO: Namenlijst huidige kamerleden gebruiken in plaats van regex voor
 #       aanwezige kamerleden.
@@ -125,6 +132,7 @@ def make_autopct(values):
 def plot_present_over_time(present_mps, date_and_time):
     print("Plot a bar chart of present per day/vergadernummer.")
 
+
 def plot_present_mps(present_mps, date_and_time):
     print("Plotting a pie chart with number of present MPs")
     # NOTE: Magic number, even though I don't expect this to change soon.
@@ -145,15 +153,10 @@ def plot_present_mps(present_mps, date_and_time):
     plt.legend(labels, loc='lower left')
     plt.show()
 
-document_soort = 'h' # handeling
-instantie = 'tk' # tweede kamer
-vergaderjaar = 20172018 # samenstelling van twee opvolgende jaren
-max_volnummer = 1 # range van 
 
-def process_handelingen():
-    # TODO: How to figure out the vergaderjaar and volgnummer?
-    # NOTE: Hardcoded base URL, kind of a magic number.
-    base_url = 'https://zoek.officielebekendmakingen.nl/h-tk-20172018-'
+def process_handelingen(base_url):
+    """ """
+    
     # FIXME: Hardcoded range, base this on URL?
     for i in range(50, 52):
         print('i: %i' % i)
