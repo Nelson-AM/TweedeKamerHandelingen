@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<officiele-publicatie xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://technische-documentatie.oep.overheid.nl/schema/op-xsd-2012-1">
+  <metadata>
+    <meta name="OVERHEIDop.externMetadataRecord" scheme="" content="https://zoek.officielebekendmakingen.nl/h-tk-20172018-50-1/metadata.xml" />
+  </metadata>
+  <handelingen>
+    <vergadering>
+      <vergadering-nummer>50e vergadering</vergadering-nummer>
+      <vergaderdatum>Donderdag 8 februari 2018</vergaderdatum>
+      <vergadertijd>Aanvang 10:15 uur</vergadertijd>
+    </vergadering>
+    <opening>
+      <nr>1</nr>
+      <tekst status="goed">
+        <al-groep>
+          <al>
+            <nadruk type="vet">Voorzitter: Arib</nadruk> </al>
+        </al-groep>
+        <al-groep>
+          <al>Aanwezig zijn 142 leden der Kamer, te weten:</al>
+        </al-groep>
+        <al-groep>
+          <al>Van Aalst, Agema, Alkaya, Amhaouch, Arib, Arissen, Asscher, Azarkan, Azmani, Baudet, Becker, Beckerman, Beertema, Belhaj, Van den Berg, Bergkamp, Bisschop, Den Boer, Van den Bosch, Martin Bosma, Bosman, Bouali, Van Brenk, Ten Broeke, Bruins, Bruins Slot, Buitenweg, Van Dam, Diertens, Tony van Dijck, Gijs van Dijk, Jasper van Dijk, Dijkhoff, Dijksma, Pia Dijkstra, Remco Dijkstra, Dik-Faber, Diks, Van Eijs, El Yassini, Ellemeet, Fritsma, Futselaar, Geluk-Poortvliet, Geurts, De Graaf, Van der Graaf, Grashoff, Graus, De Groot, Groothuizen, Van Haersma Buma, Van Haga, Rudmer Heerema, Pieter Heerma, Helder, Van Helvert, Hennis-Plasschaert, Hermans, Hiddema, Hijink, Van den Hul, Jetten, De Jong, Karabulut, Klaver, Koerhuis, Kooiman, Koopmans, Kops, Kröger, Krol, Kuik, Kuiken, Kuzu, Kwint, Laan-Geselschap, Laçin, De Lange, Van der Lee, Leijten, Van der Linde, Lodders, Madlener, Maeijer, Markuszower, Von Martels, Van Meenen, Middendorp, Van der Molen, Moorlag, Agnes Mulder, Anne Mulder, Edgar Mulder, Nijboer, Nijkerken-de Haan, Van Nispen, Van Ojik, Omtzigt, Van Oosten, Öztürk, Özütok, Paternotte, Pechtold, Peters, Ploumen, Popken, Van Raak, Raemakers, Rog, Ronnes, Van Rooijen, De Roon, Arno Rutte, Sazias, Segers, Sienot, Sjoerdsma, Slootweg, Sneller, Snels, Van der Staaij, Tellegen, Thieme, Tielen, Van Toorenburg, Veldman, Verhoeven, Voordewind, Voortman, Aukje de Vries, Wassenberg, Van Weerdenburg, Westerveld, Weverling, Van Weyenberg, Wiersma, Wilders, Wörsdörfer, Van 't Wout, Yeşilgöz-Zegerius en Ziengs,</al>
+        </al-groep>
+        <al-groep>
+          <al>en mevrouw Van Ark, staatssecretaris van Sociale Zaken en Werkgelegenheid, de heer Grapperhaus, minister van Justitie en Veiligheid, de heer Hoekstra, minister van Financiën, en mevrouw Van Nieuwenhuizen-Wijbenga, minister van Infrastructuur en Waterstaat.</al>
+        </al-groep>
+      </tekst>
+    </opening>
+  </handelingen>
+</officiele-publicatie>
