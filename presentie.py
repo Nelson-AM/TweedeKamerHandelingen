@@ -14,6 +14,14 @@ regex_time = 'Aanvang (?P<hour>[0-9]+):(?P<minute>[0-9]+) uur'
 base_url = 'https://zoek.officielebekendmakingen.nl/h-tk-20172018-'
 document_soort = 'h' # handeling
 instantie = 'tk' # tweede kamer
+vergaderjaren = [20112012, 
+                 20122013, 
+                 20132014, 
+                 20142015, 
+                 20152016, 
+                 20162017, 
+                 20172018]
+
 vergaderjaar = 20172018 # samenstelling van twee opvolgende jaren
 max_volnummer = 1 # How to determine this?
 
@@ -28,6 +36,7 @@ regex_aanwezig = 'Aanwezig zijn (?P<aanwezig>[0-9]+)'
 # regex_parlement = '(?P<naam>[^\n,]+)(,| en )'
 # regex_kabinet = ''
 
+sample_outfile = 'data/sample_data.csv'
 
 def download_document(url, soup=True):
     """ Downloads document from url, uses soup as default output. """
@@ -154,12 +163,14 @@ def plot_present_mps(present_mps, date_and_time):
     plt.show()
 
 
-def save_presentie_aantal():
+def save_presentie_aantal(date_and_time, volgnummer, present_mps, append=True):
     print('Save CSV containing number of present mps per meeting day')
     # Output should contain:
     # - Date-time
     # - Vergaderjaar + volgnummer
     # - present_mps
+
+    vergaderjaar_nummer = '20172018-' + volgnummer
 
     # TODO: Define output file, i.e.: ./data/aanwezigen_per_vergadering.csv
     #       As input argument?
