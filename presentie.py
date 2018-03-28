@@ -4,6 +4,7 @@ import requests, bs4
 import datetime
 import re
 import matplotlib.pyplot as plt
+import pandas
 
 regex_number = '(?P<number>[0-9]+)'
 regex_day = '(?P<strDay>[a-zA-Z]+) (?P<day>[0-9]+) '
@@ -38,8 +39,11 @@ regex_aanwezig = 'Aanwezig zijn (?P<aanwezig>[0-9]+)'
 
 sample_outfile = 'data/sample_data.csv'
 
+
 def download_document(url, soup=True):
     """ Downloads document from url, uses soup as default output. """
+
+    # TODO: Be able to handle server errors.
     document = requests.get(url)
     document.raise_for_status()
 
@@ -82,10 +86,7 @@ def parse_datetime(str_datum, str_tijd):
     """ Parse date and time strings to return a single date-time object. """
     match_date = re.search(regex_date, str_datum)
     match_time = re.search(regex_time, str_tijd)
-    print('Match date:\n')
-    print(match_date)
-    print('Match time:\n')
-    print(match_time)
+
     if match_date and match_time:
         day = int(match_date.group('day'))
         int_month = int(convert_dutch_month(match_date.group('strMonth')))
@@ -118,10 +119,8 @@ def parse_al_tags(al_item):
 
     if match_voorzitter:
         voorzitter = match_voorzitter.group('voorzitter')
-        print("Voorzitter: %s" % voorzitter)
     elif match_aanwezig:
         aanwezig = int(match_aanwezig.group('aanwezig'))
-        print("Aantal aanwezigen: %s" % aanwezig)
     # elif match_parlement:
         # print("Namen parlementsleden")
         # TODO: Check if number of parsed names == aantal aanwezigen.
@@ -163,26 +162,31 @@ def plot_present_mps(present_mps, date_and_time):
     plt.show()
 
 
-def save_presentie_aantal(date_and_time, volgnummer, present_mps, append=True):
+def save_presentie(dataframe, outfile, append=False):
     print('Save CSV containing number of present mps per meeting day')
     # Output should contain:
     # - Date-time
     # - Vergaderjaar + volgnummer
     # - present_mps
-
-    vergaderjaar_nummer = '20172018-' + volgnummer
-
     # TODO: Define output file, i.e.: ./data/aanwezigen_per_vergadering.csv
     #       As input argument?
     # TODO: Allow appending of files?
     # TODO: Separate file for each vergaderjaar? Can be based on URL.
+    if not append:
+        dataframe.to_csv(outfile, sep=',')
+    else:
+        dataframe.to_csv(outfile, sep=',', mode='a')
 
 
 def process_opening_presentie(base_url):
     """ Parse opening and presentie file, save data to CSV """
-    
+
+    presentiedata = pandas.DataFrame(columns=['volgnummer', 
+                                              'datumtijd', 
+                                              'aanwezig'])
+
     # FIXME: Hardcoded range for testing purposes.
-    for i in range(50, 52):
+    for i in range(1,5):
         print('i: %i' % i)
         download_url = base_url + str(i) + '-1.xml'
         handeling_soup = download_document(download_url)
@@ -192,26 +196,36 @@ def process_opening_presentie(base_url):
         # 'vergaderdatum' and 'vergadertijd' always consist of one element.
         str_nummer = str(handeling_soup.select('vergadering-nummer'))
         number = parse_number(str_nummer)
-        print('Number of current handeling: %s' % number)
-
         str_datum = str(handeling_soup.select('vergaderdatum'))
         str_tijd = str(handeling_soup.select('vergadertijd'))
-        print('Datum: %s' % str_datum)
-        print('Datum: %s' % str_tijd)
-
         date_and_time = parse_datetime(str_datum, str_tijd)
-        print('Date and time of current handeling: %s' % date_and_time)
+
+        # FIXME: Hardcoded vergaderjaar
+        volgnummer = '20172018-' + number
 
         # DONE: Put both month and date into a single datetime object.
         al = handeling_soup.select('al')
 
         for item in al:
-            print('Here I will parse the \'al\' tags')
             match_aanwezig = re.search(regex_aanwezig, str(item))
 
             if match_aanwezig:
+                print('Match aanwezig!')
+                # TODO: Add aanwezig to pandas dataframe with other variables.
                 aanwezig = int(match_aanwezig.group('aanwezig'))
-                plot_present_mps(aanwezig, date_and_time)
+                # plot_present_mps(aanwezig, date_and_time)
+            else:
+                print('Not match aanwezig! Do nothing with aanwezig var')
+
+        presentiedata = presentiedata.append({'volgnummer': volgnummer, 
+                                              'datumtijd': date_and_time,
+                                              'aanwezig': aanwezig},
+                                             ignore_index=True)
+
+    print(presentiedata)
+
+    # TODO: Save presentiedata to csv.
+    save_presentie(presentiedata, sample_outfile)
 
 
 if __name__ == '__main__':
