@@ -12,19 +12,21 @@ regex_monthyear = '(?P<strMonth>[a-z]+) (?P<year>[0-9]+)'
 regex_date = regex_day + regex_monthyear
 regex_time = 'Aanvang (?P<hour>[0-9]+):(?P<minute>[0-9]+) uur'
 
-base_url = 'https://zoek.officielebekendmakingen.nl/h-tk-20172018-'
+
+# Example URL: https://zoek.officielebekendmakingen.nl/h-tk-20162017-1-1.html
+base_url = 'https://zoek.officielebekendmakingen.nl/h-tk-'
 document_soort = 'h' # handeling
 instantie = 'tk' # tweede kamer
-vergaderjaren = [20112012, 
-                 20122013, 
-                 20132014, 
-                 20142015, 
-                 20152016, 
+vergaderjaren = [#20112012, 
+                 #20122013, 
+                 #20132014, 
+                 #20142015, 
+                 # 20152016, 
                  20162017, 
                  20172018]
 
-vergaderjaar = 20172018 # samenstelling van twee opvolgende jaren
-max_volnummer = 1 # How to determine this?
+# vergaderjaar = 20172018 # samenstelling van twee opvolgende jaren
+max_volnummer = 1 # How to determine the max?
 
 # NOTE: Magic number, even though I don't expect this to change soon.
 total_mps = 150
@@ -162,8 +164,12 @@ def plot_present_mps(present_mps, date_and_time):
     plt.show()
 
 
-def save_presentie(dataframe, outfile, append=False):
-    print('Save CSV containing number of present mps per meeting day')
+def read_data_csv(infile):
+    print('Read CSV data')
+
+
+def save_data_csv(dataframe, outfile, append=False):
+    print('Save CSV data')
     # Output should contain:
     # - Date-time
     # - Vergaderjaar + volgnummer
@@ -173,60 +179,66 @@ def save_presentie(dataframe, outfile, append=False):
     # TODO: Allow appending of files?
     # TODO: Separate file for each vergaderjaar? Can be based on URL.
     if not append:
+        print('Not appending data to existing csv')
         dataframe.to_csv(outfile, sep=',')
     else:
+        print('Appending data to existing csv')
         dataframe.to_csv(outfile, sep=',', mode='a')
 
 
 def process_opening_presentie(base_url):
     """ Parse opening and presentie file, save data to CSV """
 
-    presentiedata = pandas.DataFrame(columns=['volgnummer', 
-                                              'datumtijd', 
-                                              'aanwezig'])
+    for vergaderjaar in vergaderjaren:
+        print(vergaderjaar)
+        presentiedata = pandas.DataFrame(columns=['volgnummer', 
+                                                  'datumtijd', 
+                                                  'aanwezig'])
 
-    # FIXME: Hardcoded range for testing purposes.
-    for i in range(1,5):
-        print('i: %i' % i)
-        download_url = base_url + str(i) + '-1.xml'
-        handeling_soup = download_document(download_url)
+        # FIXME: Hardcoded range for testing purposes.
+        for i in range(1,3):
+            print('i: %i' % i)
 
-        # TODO: Check if number == i
-        # NOTE: Working under the assumption that 'vergadering-nummer', 
-        # 'vergaderdatum' and 'vergadertijd' always consist of one element.
-        str_nummer = str(handeling_soup.select('vergadering-nummer'))
-        number = parse_number(str_nummer)
-        str_datum = str(handeling_soup.select('vergaderdatum'))
-        str_tijd = str(handeling_soup.select('vergadertijd'))
-        date_and_time = parse_datetime(str_datum, str_tijd)
+            custom_part = str(vergaderjaar) + '-' + str(i) + '-1.xml'
+            download_url = base_url + custom_part
+            print(download_url)
+            handeling_soup = download_document(download_url)
 
-        # FIXME: Hardcoded vergaderjaar
-        volgnummer = '20172018-' + number
+            # TODO: Check if number == i
+            # NOTE: Working under the assumption that 'vergadering-nummer', 
+            # 'vergaderdatum' and 'vergadertijd' always consist of one element.
+            str_nummer = str(handeling_soup.select('vergadering-nummer'))
+            number = parse_number(str_nummer)
+            str_datum = str(handeling_soup.select('vergaderdatum'))
+            str_tijd = str(handeling_soup.select('vergadertijd'))
+            date_and_time = parse_datetime(str_datum, str_tijd)
 
-        # DONE: Put both month and date into a single datetime object.
-        al = handeling_soup.select('al')
+            volgnummer = str(vergaderjaar) + '-' + number
 
-        for item in al:
-            match_aanwezig = re.search(regex_aanwezig, str(item))
+            # DONE: Put both month and date into a single datetime object.
+            al = handeling_soup.select('al')
 
-            if match_aanwezig:
-                print('Match aanwezig!')
-                # TODO: Add aanwezig to pandas dataframe with other variables.
-                aanwezig = int(match_aanwezig.group('aanwezig'))
-                # plot_present_mps(aanwezig, date_and_time)
-            else:
-                print('Not match aanwezig! Do nothing with aanwezig var')
+            for item in al:
+                match_aanwezig = re.search(regex_aanwezig, str(item))
 
-        presentiedata = presentiedata.append({'volgnummer': volgnummer, 
-                                              'datumtijd': date_and_time,
-                                              'aanwezig': aanwezig},
-                                             ignore_index=True)
+                if match_aanwezig:
+                    print('Match aanwezig!')
+                    # TODO: Add aanwezig to pandas dataframe with other variables.
+                    aanwezig = int(match_aanwezig.group('aanwezig'))
+                    # plot_present_mps(aanwezig, date_and_time)
+                else:
+                    print('Not match aanwezig! Do nothing with aanwezig var')
 
-    print(presentiedata)
-
-    # TODO: Save presentiedata to csv.
-    save_presentie(presentiedata, sample_outfile)
-
+            presentiedata = presentiedata.append({'volgnummer': volgnummer, 
+                                                'datumtijd': date_and_time,
+                                                'aanwezig': aanwezig},
+                                                ignore_index=True)
+        print(presentiedata)
+        # DONE: Save presentiedata to csv.
+        # TODO: Generate outfile name based on vergaderjaar!
+        outfile = 'data/' + str(vergaderjaar) + '_presentiedata.csv'
+        print(outfile)
+        save_data_csv(presentiedata, outfile)
 
 if __name__ == '__main__':
     process_opening_presentie(base_url)
