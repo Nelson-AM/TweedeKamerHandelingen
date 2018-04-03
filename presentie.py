@@ -105,34 +105,6 @@ def parse_datetime(str_datum, str_tijd):
         print("Whoops, something went wrong in parse_datetime!")
 
 
-def parse_al_tags(al_item):
-    print("Parsing al tags, there are four kinds in the opening type.")
-    # TODO: Remove obsolete function, see what can be reused.
-
-    match_voorzitter = re.search(regex_voorzitter, al_item)
-    match_aanwezig = re.search(regex_aanwezig, al_item)
-    # match_parlement = re.search(regex_parlement, al_item)
-    # match_kabinet = re.search(regex_kabinet, al_item)
-
-    voorzitter = ''
-    aanwezig = ''
-    parlementsleden = ''
-    kabinetsleden = ''
-
-    if match_voorzitter:
-        voorzitter = match_voorzitter.group('voorzitter')
-    elif match_aanwezig:
-        aanwezig = int(match_aanwezig.group('aanwezig'))
-    # elif match_parlement:
-        # print("Namen parlementsleden")
-        # TODO: Check if number of parsed names == aantal aanwezigen.
-    # elif match_kabinet:
-        # print("Namen en functies kabinetsleden")
-    else:
-        print("WELP, there's a kind that's not one of the above.")
-    return [voorzitter, aanwezig, parlementsleden, kabinetsleden]
-
-
 def make_autopct(values):
     def my_autopct(pct):
         total = sum(values)
@@ -165,19 +137,14 @@ def plot_present_mps(present_mps, date_and_time):
 
 
 def read_data_csv(infile):
+    """ Read CSV file to pandas dataframe. """
     print('Read CSV data')
+    # TODO: return pandas dataframe for reading.
 
 
 def save_data_csv(dataframe, outfile, append=False):
-    print('Save CSV data')
-    # Output should contain:
-    # - Date-time
-    # - Vergaderjaar + volgnummer
-    # - present_mps
-    # TODO: Define output file, i.e.: ./data/aanwezigen_per_vergadering.csv
-    #       As input argument?
-    # TODO: Allow appending of files?
-    # TODO: Separate file for each vergaderjaar? Can be based on URL.
+    """ Save pandas dataframe to CSV file, with option to append. """
+
     if not append:
         print('Not appending data to existing csv')
         dataframe.to_csv(outfile, sep=',')
@@ -187,7 +154,7 @@ def save_data_csv(dataframe, outfile, append=False):
 
 
 def process_opening_presentie(base_url):
-    """ Parse opening and presentie file, save data to CSV """
+    """ Parse opening and presentie file, save data to CSV. """
 
     for vergaderjaar in vergaderjaren:
         print(vergaderjaar)
@@ -219,6 +186,7 @@ def process_opening_presentie(base_url):
             al = handeling_soup.select('al')
 
             for item in al:
+                match_voorzitter = re.search(regex_voorzitter, str(item))
                 match_aanwezig = re.search(regex_aanwezig, str(item))
 
                 if match_aanwezig:
@@ -233,11 +201,8 @@ def process_opening_presentie(base_url):
                                                 'datumtijd': date_and_time,
                                                 'aanwezig': aanwezig},
                                                 ignore_index=True)
-        print(presentiedata)
-        # DONE: Save presentiedata to csv.
-        # TODO: Generate outfile name based on vergaderjaar!
+
         outfile = 'data/' + str(vergaderjaar) + '_presentiedata.csv'
-        print(outfile)
         save_data_csv(presentiedata, outfile)
 
 if __name__ == '__main__':
