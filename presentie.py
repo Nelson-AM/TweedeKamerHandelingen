@@ -153,8 +153,17 @@ def save_data_csv(dataframe, outfile, append=False):
         dataframe.to_csv(outfile, sep=',', mode='a')
 
 
+def generate_url(vergaderjaar, volgnummer, docnummer):
+    """ Generate url based on variables """
+
+    custom = str(vergaderjaar) + '-' + str(volgnummer) + '-' + str(docnummer)
+    complete_url = base_url + custom + '.xml'
+    return complete_url
+
 def process_opening_presentie(base_url):
     """ Parse opening and presentie file, save data to CSV. """
+
+    doc_nr = 1
 
     for vergaderjaar in vergaderjaren:
         print(vergaderjaar)
@@ -166,8 +175,9 @@ def process_opening_presentie(base_url):
         for i in range(1,3):
             print('i: %i' % i)
 
-            custom_part = str(vergaderjaar) + '-' + str(i) + '-1.xml'
-            download_url = base_url + custom_part
+            download_url = generate_url(vergaderjaar, i, doc_nr)
+            # custom_part = str(vergaderjaar) + '-' + str(i) + '-1.xml'
+            # download_url = base_url + custom_part
             print(download_url)
             handeling_soup = download_document(download_url)
 
@@ -196,7 +206,11 @@ def process_opening_presentie(base_url):
                     # plot_present_mps(aanwezig, date_and_time)
                 else:
                     print('Not match aanwezig! Do nothing with aanwezig var')
-
+                if match_voorzitter:
+                    print(match_voorzitter)
+                else:
+                    print('Not match voorzitter!')
+            
             presentiedata = presentiedata.append({'volgnummer': volgnummer, 
                                                 'datumtijd': date_and_time,
                                                 'aanwezig': aanwezig},
@@ -204,6 +218,8 @@ def process_opening_presentie(base_url):
 
         outfile = 'data/' + str(vergaderjaar) + '_presentiedata.csv'
         save_data_csv(presentiedata, outfile)
+
+# TODO: Add routine to 
 
 if __name__ == '__main__':
     process_opening_presentie(base_url)
