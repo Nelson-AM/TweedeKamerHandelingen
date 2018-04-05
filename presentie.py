@@ -138,8 +138,7 @@ def plot_present_mps(present_mps, date_and_time):
 
 def read_data_csv(infile):
     """ Read CSV file to pandas dataframe. """
-    print('Read CSV data')
-    # TODO: return pandas dataframe for reading.
+    return pandas.read_csv(infile, sep=',')
 
 
 def save_data_csv(dataframe, outfile, append=False):
@@ -173,12 +172,8 @@ def process_opening_presentie(base_url):
 
         # FIXME: Hardcoded range for testing purposes.
         for i in range(1,3):
-            print('i: %i' % i)
 
             download_url = generate_url(vergaderjaar, i, doc_nr)
-            # custom_part = str(vergaderjaar) + '-' + str(i) + '-1.xml'
-            # download_url = base_url + custom_part
-            print(download_url)
             handeling_soup = download_document(download_url)
 
             # TODO: Check if number == i
@@ -200,12 +195,7 @@ def process_opening_presentie(base_url):
                 match_aanwezig = re.search(regex_aanwezig, str(item))
 
                 if match_aanwezig:
-                    print('Match aanwezig!')
-                    # TODO: Add aanwezig to pandas dataframe with other variables.
                     aanwezig = int(match_aanwezig.group('aanwezig'))
-                    # plot_present_mps(aanwezig, date_and_time)
-                else:
-                    print('Not match aanwezig! Do nothing with aanwezig var')
                 if match_voorzitter:
                     print(match_voorzitter)
                 else:
