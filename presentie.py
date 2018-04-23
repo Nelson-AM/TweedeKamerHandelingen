@@ -3,14 +3,13 @@ import re
 import matplotlib.pyplot as plt
 import pandas
 
-from handelingen import download_document, generate_url
+from handelingen import download_document, generate_doc_url
 
 regex_number = '(?P<number>[0-9]+)'
 regex_day = '(?P<strDay>[a-zA-Z]+) (?P<day>[0-9]+) '
 regex_monthyear = '(?P<strMonth>[a-z]+) (?P<year>[0-9]+)'
 regex_date = regex_day + regex_monthyear
 regex_time = 'Aanvang (?P<hour>[0-9]+):(?P<minute>[0-9]+) uur'
-
 
 # Example URL: https://zoek.officielebekendmakingen.nl/h-tk-20162017-1-1.html
 base_url = 'https://zoek.officielebekendmakingen.nl/h-tk-'
@@ -20,12 +19,12 @@ vergaderjaren = [#20112012,
                  #20122013, 
                  #20132014, 
                  #20142015, 
-                 # 20152016, 
+                 #20152016, 
                  20162017, 
                  20172018]
 
 # vergaderjaar = 20172018 # samenstelling van twee opvolgende jaren
-max_volnummer = 1 # How to determine the max?
+max_vergadernummer = 1 # How to determine the max?
 
 # NOTE: Magic number, even though I don't expect this to change soon.
 total_mps = 150
@@ -149,9 +148,9 @@ def process_opening_presentie(base_url):
                                                   'aanwezig'])
 
         # FIXME: Hardcoded range for testing purposes.
-        for i in range(1,3):
+        for i in range(1, 100):
 
-            download_url = generate_url(base_url, vergaderjaar, i, doc_nr)
+            download_url = generate_doc_url(vergaderjaar, i, doc_nr)
             handeling_soup = download_document(download_url)
 
             # TODO: Check if number == i
@@ -165,7 +164,6 @@ def process_opening_presentie(base_url):
 
             volgnummer = str(vergaderjaar) + '-' + number
 
-            # DONE: Put both month and date into a single datetime object.
             al = handeling_soup.select('al')
 
             for item in al:
