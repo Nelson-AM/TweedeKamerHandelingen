@@ -151,7 +151,7 @@ def process_opening_presentie(base_url):
         # FIXME: Hardcoded range for testing purposes.
         for i in range(1,3):
 
-            download_url = generate_url(vergaderjaar, i, doc_nr)
+            download_url = generate_url(base_url, vergaderjaar, i, doc_nr)
             handeling_soup = download_document(download_url)
 
             # TODO: Check if number == i

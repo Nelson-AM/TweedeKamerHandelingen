@@ -3,7 +3,7 @@ import bs4
 
 # TODO: Fetch complete set of handelingen for a date.
 
-def generate_url(vergaderjaar, volgnummer, docnummer):
+def generate_url(base_url, vergaderjaar, volgnummer, docnummer):
     """ Generate url based on variables """
 
     custom = str(vergaderjaar) + '-' + str(volgnummer) + '-' + str(docnummer)
