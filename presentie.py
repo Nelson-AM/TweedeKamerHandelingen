@@ -1,10 +1,9 @@
-#! Python 3.6.4
-
-import requests, bs4
 import datetime
 import re
 import matplotlib.pyplot as plt
 import pandas
+
+from handelingen import download_document, generate_url
 
 regex_number = '(?P<number>[0-9]+)'
 regex_day = '(?P<strDay>[a-zA-Z]+) (?P<day>[0-9]+) '
@@ -40,20 +39,6 @@ regex_aanwezig = 'Aanwezig zijn (?P<aanwezig>[0-9]+)'
 # regex_kabinet = ''
 
 sample_outfile = 'data/sample_data.csv'
-
-
-def download_document(url, soup=True):
-    """ Downloads document from url, uses soup as default output. """
-
-    # TODO: Be able to handle server errors.
-    document = requests.get(url)
-    document.raise_for_status()
-
-    if soup:
-        document_soup = bs4.BeautifulSoup(document.text, 'html.parser')
-        return document_soup
-    else:
-        return document
 
 
 def parse_number(str_nummer):
@@ -151,13 +136,6 @@ def save_data_csv(dataframe, outfile, append=False):
         print('Appending data to existing csv')
         dataframe.to_csv(outfile, sep=',', mode='a')
 
-
-def generate_url(vergaderjaar, volgnummer, docnummer):
-    """ Generate url based on variables """
-
-    custom = str(vergaderjaar) + '-' + str(volgnummer) + '-' + str(docnummer)
-    complete_url = base_url + custom + '.xml'
-    return complete_url
 
 def process_opening_presentie(base_url):
     """ Parse opening and presentie file, save data to CSV. """
