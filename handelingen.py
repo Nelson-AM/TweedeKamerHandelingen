@@ -2,8 +2,6 @@ import requests
 import bs4
 import re
 
-# TODO: Fetch complete set of handelingen for a date.
-
 # https://zoek.officielebekendmakingen.nl/h-tk-20172018-61-1.html
 base_doc_url = 'https://zoek.officielebekendmakingen.nl/h-tk-'
 # https://zoek.officielebekendmakingen.nl/handelingen/TK/2017-2018/61/
@@ -82,7 +80,8 @@ def fetch_vergaderingen_voor_jaar(vergaderjaar):
         print('Aantal items in volgende vergadering: %i' % aantal_items_next)
 
         # NOTE: Assume that if the result is not 0, then it is > 0.
-        # NOTE: Assume that if we have two zeros in a row, we reached the end of the year.
+        # NOTE: Assume that if we have two zeros in a row, we reached the end 
+        # of the year.
         if (aantal_items != 0) and (aantal_items_next != 0):
             print('We\'re still in the middle of it, woop!')
         elif (aantal_items == 0) and (aantal_items_next != 0):
