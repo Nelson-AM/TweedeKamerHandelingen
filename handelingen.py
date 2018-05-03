@@ -64,7 +64,6 @@ def fetch_alle_vergaderitems(vergaderjaar, volgnummer):
         print(document_title)
 
         # TODO: Do something with the retrieved document.
-        # Return it?
 
 
 def fetch_vergaderingen_voor_jaar(vergaderjaar):
@@ -82,12 +81,9 @@ def fetch_vergaderingen_voor_jaar(vergaderjaar):
         # NOTE: Assume that if the result is not 0, then it is > 0.
         # NOTE: Assume that if we have two zeros in a row, we reached the end 
         # of the year.
-        if (aantal_items != 0) and (aantal_items_next != 0):
-            print('We\'re still in the middle of it, woop!')
-        elif (aantal_items == 0) and (aantal_items_next != 0):
+        if (aantal_items == 0) and (aantal_items_next != 0):
             print('Looks like we\'re missing some data, woops...')
-        elif (aantal_items != 0) and (aantal_items_next == 0):
-            print('Huidige vergadering aanwezig, we gaan door.')
+            # TODO: Record missing data?
         elif (aantal_items == 0) and (aantal_items_next ==0):
             print('Looks like we hit the end of the stream, let\'s check.')
             vorig_aantal = fetch_aantal_vergaderitems(vergaderjaar, i-1)
@@ -99,18 +95,15 @@ def fetch_vergaderingen_voor_jaar(vergaderjaar):
             else:
                 print('WELP, this should not be possible!')
 
-        # fetch_alle_vergaderitems(vergaderjaar, i)
         print('Nu moeten alle vergaderitems worden gefetcht en verwerkt.')
-        # Fetch aantal vergaderitems.
-        # Als niet nul: ga verder.
-            # Als volgende niet nul: ga door, record missing data.
+        # TODO: Download alle vergader-items voor één vergadering en sla ze op
+        # als XML-files in sourcefiles/abc.xml
+
         i = i + 1
 
-    # FIXME: Hardcoded volgnummer for testing.
-    # fetch_alle_vergaderitems(vergaderjaar, 61)
-
 if __name__ == '__main__':
-    fetch_vergaderingen_voor_jaar(20172018)
+    # fetch_vergaderingen_voor_jaar(20172018)
+    fetch_alle_vergaderitems(20172018, 61)
 
 # STRUCTURE
 # Vergaderjaar  20172018
