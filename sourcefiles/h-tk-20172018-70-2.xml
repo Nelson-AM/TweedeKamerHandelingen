@@ -1,0 +1,46 @@
+ï»¿
+<?xml version="1.0" encoding="utf-8"?>
+<officiele-publicatie xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nonamespaceschemalocation="http://technische-documentatie.oep.overheid.nl/schema/op-xsd-2012-1">
+ <metadata>
+  <meta content="https://zoek.officielebekendmakingen.nl/h-tk-20172018-70-2/metadata.xml" name="OVERHEIDop.externMetadataRecord" scheme=""/>
+ </metadata>
+ <handelingen>
+  <agendapunt>
+   <nr>
+    2
+   </nr>
+   <item-titel>
+    Mededelingen
+   </item-titel>
+   <onderwerp>
+    <al>
+    </al>
+   </onderwerp>
+   <spreekbeurt nieuw="nee">
+    <spreker>
+     <voorvoegsels>
+      De
+     </voorvoegsels>
+     <naam>
+      <achternaam>
+       voorzitter
+      </achternaam>
+     </naam>
+     :
+    </spreker>
+    <tekst status="goed">
+     <al-groep>
+      <al>
+       Ik deel aan de Kamer mee dat er geen afmeldingen zijn.
+      </al>
+     </al-groep>
+     <al-groep>
+      <al>
+       Deze mededeling wordt voor kennisgeving aangenomen.
+      </al>
+     </al-groep>
+    </tekst>
+   </spreekbeurt>
+  </agendapunt>
+ </handelingen>
+</officiele-publicatie>

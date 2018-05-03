@@ -1,0 +1,30 @@
+ï»¿
+<?xml version="1.0" encoding="utf-8"?>
+<officiele-publicatie xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nonamespaceschemalocation="http://technische-documentatie.oep.overheid.nl/schema/op-xsd-2012-1">
+ <metadata>
+  <meta content="https://zoek.officielebekendmakingen.nl/h-tk-20172018-70-13/metadata.xml" name="OVERHEIDop.externMetadataRecord" scheme=""/>
+ </metadata>
+ <handelingen>
+  <agendapunt>
+   <nr>
+    13
+   </nr>
+   <item-titel>
+    Sluiting
+   </item-titel>
+   <onderwerp>
+    <al>
+    </al>
+   </onderwerp>
+   <tekst>
+   </tekst>
+   <tekst status="goed">
+    <al-groep>
+     <al>
+      Sluiting 22.06 uur.
+     </al>
+    </al-groep>
+   </tekst>
+  </agendapunt>
+ </handelingen>
+</officiele-publicatie>
