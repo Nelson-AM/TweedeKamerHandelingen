@@ -3,14 +3,14 @@ import bs4
 import re
 
 # https://zoek.officielebekendmakingen.nl/h-tk-20172018-61-1.html
-base_doc_url = 'https://zoek.officielebekendmakingen.nl/h-tk-'
+base_doc_url = 'https://zoek.officielebekendmakingen.nl/'
 # https://zoek.officielebekendmakingen.nl/handelingen/TK/2017-2018/61/
 base_ovz_url = 'https://zoek.officielebekendmakingen.nl/handelingen/TK/'
 
 regex_publicaties = 'Aantal publicaties: <strong>(?P<aantal>[0-9]+)'
 
 def insert_dash(original):
-    '''Inserts new inside original at pos.'''
+    """Insert dash between two years (eg 20172018 becomes 2017-2018)."""
     return original[:4] + '-' + original[4:]
 
 def generate_ovz_url(vergaderjaar, volgnummer):
@@ -23,9 +23,14 @@ def generate_ovz_url(vergaderjaar, volgnummer):
 def generate_doc_url(vergaderjaar, volgnummer, docnummer):
     """ Generate url based on variables """
 
-    custom = str(vergaderjaar) + '-' + str(volgnummer) + '-' + str(docnummer)
-    complete_url = base_doc_url + custom + '.xml'
-    return complete_url
+    # Necessary conversions to strings.
+    vergaderjaar = str(vergaderjaar)
+    volgnr = str(volgnummer)
+    docnr = str(docnummer)
+
+    filename = 'h-tk-' + vergaderjaar + '-' + volgnr + '-' + docnr + '.xml'
+    complete_url = base_doc_url + filename
+    return complete_url, filename
 
 
 def download_document(url, soup=True):
@@ -42,7 +47,7 @@ def download_document(url, soup=True):
 
 
 def fetch_aantal_vergaderitems(vergaderjaar, volgnummer):
-    """Haal aantal publicaties voor vergadering van de website"""
+    """Haal aantal publicaties voor vergadering van de website."""
 
     ovz_url = generate_ovz_url(vergaderjaar, volgnummer)
     document = download_document(ovz_url, soup=False)
@@ -51,25 +56,35 @@ def fetch_aantal_vergaderitems(vergaderjaar, volgnummer):
     return aantal_items
 
 
+def save_handeling_document(filename, document):
+    """Sla handeling op als XML-file mbv BeautifulSoup.prettify()."""
+
+    savefilename = 'sourcefiles/' + filename
+    print('Saving file to: %s' % savefilename)
+    savefile = open(savefilename, 'w')
+    savefile.write(document.prettify())
+
+
 def fetch_alle_vergaderitems(vergaderjaar, volgnummer):
+    """Haalt alle documenten voor een vergadering op in XML-formaat."""
     aantal_items = fetch_aantal_vergaderitems(vergaderjaar, volgnummer)
     
     # NOTE: Volgnummer is index 1 numbered.
     for i in range(1, aantal_items + 1):
-        print('Volgnummer %i' % i)
-        url = generate_doc_url(vergaderjaar, volgnummer, i)
-        print(url)
+        [url, filename] = generate_doc_url(vergaderjaar, volgnummer, i)
         document = download_document(url)
-        document_title = str(document.select('item-titel'))
-        print(document_title)
+        save_handeling_document(filename, document)
 
-        # TODO: Do something with the retrieved document.
 
 
 def fetch_vergaderingen_voor_jaar(vergaderjaar):
     print('Fetch alle vergaderingen')
 
-    i = 60
+    # FIXME: Hardcoded number for testing.
+    # i = 60
+
+    # NOTE: Volgnummer is index 1 numbered.
+    i = 1
     while True:
 
         print('Volgnummer: %i' % i)
@@ -96,14 +111,13 @@ def fetch_vergaderingen_voor_jaar(vergaderjaar):
                 print('WELP, this should not be possible!')
 
         print('Nu moeten alle vergaderitems worden gefetcht en verwerkt.')
-        # TODO: Download alle vergader-items voor één vergadering en sla ze op
-        # als XML-files in sourcefiles/abc.xml
 
         i = i + 1
 
 if __name__ == '__main__':
     # fetch_vergaderingen_voor_jaar(20172018)
-    fetch_alle_vergaderitems(20172018, 61)
+
+    fetch_alle_vergaderitems(20172018, 70)
 
 # STRUCTURE
 # Vergaderjaar  20172018
