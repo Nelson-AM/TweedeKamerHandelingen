@@ -2,16 +2,19 @@ import requests
 import bs4
 import re
 
+# TODO: Import specifics (or if the list becomes too long, return them here.)
+from regex import *
+
 # https://zoek.officielebekendmakingen.nl/h-tk-20172018-61-1.html
 base_doc_url = 'https://zoek.officielebekendmakingen.nl/'
 # https://zoek.officielebekendmakingen.nl/handelingen/TK/2017-2018/61/
 base_ovz_url = 'https://zoek.officielebekendmakingen.nl/handelingen/TK/'
 
-regex_publicaties = 'Aantal publicaties: <strong>(?P<aantal>[0-9]+)'
 
 def insert_dash(original):
     """Insert dash between two years (eg 20172018 becomes 2017-2018)."""
     return original[:4] + '-' + original[4:]
+
 
 def generate_ovz_url(vergaderjaar, volgnummer):
     """Generate overzicht url om aantal documenten uit te halen"""
@@ -19,6 +22,7 @@ def generate_ovz_url(vergaderjaar, volgnummer):
     vergaderjaar_dash = insert_dash(str(vergaderjaar))
     ovz_url = base_ovz_url + vergaderjaar_dash + '/' + str(volgnummer) + '/'
     return ovz_url
+
 
 def generate_doc_url(vergaderjaar, volgnummer, docnummer):
     """ Generate url based on variables """
@@ -34,13 +38,13 @@ def generate_doc_url(vergaderjaar, volgnummer, docnummer):
 
 
 def download_document(url, soup=True):
-    """ Downloads document from url, uses soup as default output. """
+    """ Downloads document from url, uses BeautifulSoup as default output. """
 
     document = requests.get(url)
     document.raise_for_status()
 
     if soup:
-        document_soup = bs4.BeautifulSoup(document.text, 'html.parser')
+        document_soup = bs4.BeautifulSoup(document.content, 'html.parser')
         return document_soup
     else:
         return document
@@ -61,8 +65,9 @@ def save_handeling_document(filename, document):
 
     savefilename = 'sourcefiles/' + filename
     print('Saving file to: %s' % savefilename)
-    savefile = open(savefilename, 'w')
-    savefile.write(document.prettify())
+    print(document)
+    # savefile = open(savefilename, 'w', encoding=character_encoding)
+    # savefile.write(document.prettify())
 
 
 def fetch_alle_vergaderitems(vergaderjaar, volgnummer):
@@ -72,9 +77,8 @@ def fetch_alle_vergaderitems(vergaderjaar, volgnummer):
     # NOTE: Volgnummer is index 1 numbered.
     for i in range(1, aantal_items + 1):
         [url, filename] = generate_doc_url(vergaderjaar, volgnummer, i)
-        document = download_document(url)
+        document = download_document(url, soup=False)
         save_handeling_document(filename, document)
-
 
 
 def fetch_vergaderingen_voor_jaar(vergaderjaar):
@@ -116,8 +120,12 @@ def fetch_vergaderingen_voor_jaar(vergaderjaar):
 
 if __name__ == '__main__':
     # fetch_vergaderingen_voor_jaar(20172018)
+    # fetch_alle_vergaderitems(20172018, 70)
+    document = download_document('https://zoek.officielebekendmakingen.nl/h-tk-20172018-70-1.xml')
+    print(document)
 
-    fetch_alle_vergaderitems(20172018, 70)
+    text = document.get_text()
+    print(text)
 
 # STRUCTURE
 # Vergaderjaar  20172018

@@ -3,13 +3,9 @@ import re
 import matplotlib.pyplot as plt
 import pandas
 
+# TODO: Import specifics (or if the list becomes too long, return them here.)
+from regex import *
 from handelingen import download_document, generate_doc_url
-
-regex_number = '(?P<number>[0-9]+)'
-regex_day = '(?P<strDay>[a-zA-Z]+) (?P<day>[0-9]+) '
-regex_monthyear = '(?P<strMonth>[a-z]+) (?P<year>[0-9]+)'
-regex_date = regex_day + regex_monthyear
-regex_time = 'Aanvang (?P<hour>[0-9]+):(?P<minute>[0-9]+) uur'
 
 # Example URL: https://zoek.officielebekendmakingen.nl/h-tk-20162017-1-1.html
 base_url = 'https://zoek.officielebekendmakingen.nl/h-tk-'
@@ -28,14 +24,6 @@ max_vergadernummer = 1 # How to determine the max?
 
 # NOTE: Magic number, even though I don't expect this to change soon.
 total_mps = 150
-
-# NOTE: Voorzitter is lid van de TK, dus moet ook op de namenlijst staan.
-# TODO: Namenlijst huidige kamerleden gebruiken in plaats van regex voor
-#       aanwezige kamerleden.
-regex_voorzitter = 'Voorzitter: (?P<voorzitter>[a-zA-Z]+)'
-regex_aanwezig = 'Aanwezig zijn (?P<aanwezig>[0-9]+)'
-# regex_parlement = '(?P<naam>[^\n,]+)(,| en )'
-# regex_kabinet = ''
 
 sample_outfile = 'data/sample_data.csv'
 
